@@ -1,0 +1,15 @@
+name: fact_order
+pipeline: sales_analytics
+depends_on: [source.erpnext.orders, dw.dim_customer]
+target: dw.fact_order
+sql: |
+  select o.name as order_id, o.customer as customer_id,
+         c.customer_name, o.transaction_date as order_date,
+         o.base_net_total as order_value
+  from raw.erpnext_sales_orders o
+  join dw.dim_customer c on o.customer = c.customer_id
+  where o.docstatus = 1
+tests:
+  - {kind: unique, column: order_id}
+  - {kind: not_null, column: order_id}
+  - {kind: not_null, column: customer_id}

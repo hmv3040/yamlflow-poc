@@ -1,0 +1,11 @@
+name: customer_sales
+pipeline: sales_analytics
+depends_on: [dw.fact_order]
+target: analytics.customer_sales
+model: dw.fact_order
+dimensions: [customer_id, customer_name]
+measures:
+  - {name: order_count, aggregation: count}
+  - {name: order_value, aggregation: sum, column: order_value}
+tests:
+  - {kind: unique, column: customer_id}

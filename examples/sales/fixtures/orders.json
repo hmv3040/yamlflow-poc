@@ -1,0 +1,8 @@
+[
+  {"name":"SO-001","customer":"CUST-001","transaction_date":"2026-11-15","base_net_total":1200,"docstatus":1},
+  {"name":"SO-002","customer":"CUST-002","transaction_date":"2026-11-15","base_net_total":800,"docstatus":1},
+  {"name":"SO-003","customer":"CUST-001","transaction_date":"2026-11-16","base_net_total":500,"docstatus":1},
+  {"name":"SO-004","customer":"CUST-003","transaction_date":"2026-11-16","base_net_total":300,"docstatus":1},
+  {"name":"SO-005","customer":"CUST-002","transaction_date":"2026-11-16","base_net_total":999,"docstatus":0},
+  {"name":"SO-006","customer":"CUST-003","transaction_date":"2026-11-16","base_net_total":750,"docstatus":2}
+]

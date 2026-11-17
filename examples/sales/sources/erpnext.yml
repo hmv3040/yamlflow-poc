@@ -1,0 +1,27 @@
+name: erpnext
+pipeline: sales_analytics
+# Demo fixtures work without ERPNext. ERPNext mode uses the same declared schema.
+type: frappe
+base_url_env: ERPNEXT_URL
+token_env: ERPNEXT_TOKEN
+resources:
+  - name: customers
+    doctype: Customer
+    target: raw.erpnext_customers
+    primary_key: [name]
+    fixture: fixtures/customers.json
+    columns:
+      name: VARCHAR
+      customer_name: VARCHAR
+      customer_group: VARCHAR
+  - name: orders
+    doctype: Sales Order
+    target: raw.erpnext_sales_orders
+    primary_key: [name]
+    fixture: fixtures/orders.json
+    columns:
+      name: VARCHAR
+      customer: VARCHAR
+      transaction_date: DATE
+      base_net_total: DECIMAL(18,2)
+      docstatus: INTEGER

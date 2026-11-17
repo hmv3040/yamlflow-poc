@@ -1,0 +1,13 @@
+name: daily_order_value
+pipeline: sales_analytics
+depends_on: [dw.fact_order]
+target: analytics.daily_order_value
+model: dw.fact_order
+dimensions: [order_date]
+measures:
+  - {name: order_count, aggregation: count}
+  - {name: order_value, aggregation: sum, column: order_value}
+  - {name: average_order_value, aggregation: avg, column: order_value}
+tests:
+  - {kind: unique, column: order_date}
+  - {kind: not_null, column: order_date}

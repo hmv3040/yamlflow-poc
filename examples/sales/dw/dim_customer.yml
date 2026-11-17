@@ -1,0 +1,10 @@
+name: dim_customer
+pipeline: sales_analytics
+depends_on: [source.erpnext.customers]
+target: dw.dim_customer
+sql: |
+  select name as customer_id, customer_name, customer_group
+  from raw.erpnext_customers
+tests:
+  - {kind: unique, column: customer_id}
+  - {kind: not_null, column: customer_id}

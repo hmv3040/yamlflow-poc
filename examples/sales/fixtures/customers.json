@@ -1,0 +1,5 @@
+[
+  {"name":"CUST-001","customer_name":"Acme Retail","customer_group":"Commercial"},
+  {"name":"CUST-002","customer_name":"Bluebird Labs","customer_group":"Commercial"},
+  {"name":"CUST-003","customer_name":"Cedar Stores","customer_group":"Commercial"}
+]

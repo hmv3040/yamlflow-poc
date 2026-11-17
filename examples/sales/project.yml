@@ -1,0 +1,12 @@
+version: 1
+name: sales_demo
+warehouse:
+  path: data/analytics.duckdb
+pipelines:
+  sales_analytics:
+    schedule: "0 * * * *"
+    timezone: Asia/Kolkata
+    start_date: "2026-11-17"
+    catchup: false
+    retries: 2
+    retry_delay_seconds: 30

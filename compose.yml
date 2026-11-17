@@ -1,0 +1,60 @@
+name: yamlflow-poc
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - airflow-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U airflow"]
+      interval: 5s
+      retries: 20
+
+  airflow:
+    build: .
+    # No triggerer is needed: all generated tasks are ordinary Python tasks.
+    entrypoint: [/usr/bin/dumb-init, --]
+    command: [python, /opt/yamlflow/scripts/start_airflow.py]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__PARALLELISM: "1"
+      AIRFLOW__CORE__MAX_ACTIVE_TASKS_PER_DAG: "1"
+      AIRFLOW__DAG_PROCESSOR__PARSING_PROCESSES: "1"
+      AIRFLOW__DAG_PROCESSOR__MIN_FILE_PROCESS_INTERVAL: "120"
+      AIRFLOW__DAG_PROCESSOR__DAG_FILE_PROCESSOR_TIMEOUT: "180"
+      AIRFLOW__CORE__DAGBAG_IMPORT_TIMEOUT: "120"
+      AIRFLOW__API__WORKERS: "1"
+      AIRFLOW__WORKERS__EXECUTION_API_TIMEOUT: "120"
+      AIRFLOW__CORE__EXECUTION_API_SERVER_URL: http://localhost:8080/execution/
+      # Shared development-only keys for the API and task processes.
+      AIRFLOW__API_AUTH__JWT_SECRET: yamlflow-local-development-jwt-secret
+      AIRFLOW__API__SECRET_KEY: yamlflow-local-development-api-secret
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
+      AIRFLOW__CORE__DAG_IGNORE_FILE_SYNTAX: glob
+      AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_USERS: "admin:admin"
+      YAMLFLOW_DB: /opt/airflow/data/analytics.duckdb
+      YAMLFLOW_SOURCE_MODE: ${YAMLFLOW_SOURCE_MODE:-fixture}
+      ERPNEXT_URL: ${ERPNEXT_URL:-http://host.docker.internal:8080}
+      ERPNEXT_TOKEN: ${ERPNEXT_TOKEN:-}
+    ports:
+      - "127.0.0.1:8081:8080"
+    volumes:
+      - ./generated/dags:/opt/airflow/dags:ro
+      - ./data:/opt/airflow/data
+      - ./scripts:/opt/yamlflow/scripts:ro
+      - airflow-logs:/opt/airflow/logs
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  airflow-postgres:
+  airflow-logs:

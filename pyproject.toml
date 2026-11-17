@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "yamlflow-poc"
+version = "0.1.0"
+description = "YAML-driven SaaS ingestion, DuckDB models, metrics, and Airflow DAGs"
+requires-python = ">=3.9"
+dependencies = ["duckdb==1.4.5", "pydantic>=2.12,<3", "PyYAML>=6,<7", "requests>=2.32,<3"]
+
+[project.optional-dependencies]
+analytics = ["streamlit>=1.50,<2", "openai>=1.60,<3", "sqlglot>=26,<31", "pandas>=2,<3", "python-dotenv>=1,<2"]
+
+[project.scripts]
+yamlflow = "yamlflow.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["yamlflow*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
